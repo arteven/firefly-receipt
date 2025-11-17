@@ -54,8 +54,8 @@ namespace Gevlee.FireflyReceipt.Application.Models.Firefly
         //[JsonPropertyName("currency_id")]
         //public long CurrencyId { get; set; }
 
-        //[JsonPropertyName("currency_code")]
-        //public string CurrencyCode { get; set; }
+        [JsonPropertyName("currency_code")]
+        public string CurrencyCode { get; set; }
 
         //[JsonPropertyName("currency_symbol")]
         //public string CurrencySymbol { get; set; }
@@ -66,14 +66,15 @@ namespace Gevlee.FireflyReceipt.Application.Models.Firefly
         //[JsonProperty("currency_decimal_places")]
         //public long CurrencyDecimalPlaces { get; set; }
 
-        //[JsonProperty("foreign_amount")]
-        //public decimal ForeignAmount { get; set; }
+        [JsonPropertyName("foreign_amount")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+        public decimal? ForeignAmount { get; set; }
 
         //[JsonProperty("foreign_currency_id")]
         //public long ForeignCurrencyId { get; set; }
 
-        //[JsonProperty("foreign_currency_code")]
-        //public string ForeignCurrencyCode { get; set; }
+        [JsonPropertyName("foreign_currency_code")]
+        public string ForeignCurrencyCode { get; set; }
 
         //[JsonProperty("foreign_currency_symbol")]
         //public string ForeignCurrencySymbol { get; set; }

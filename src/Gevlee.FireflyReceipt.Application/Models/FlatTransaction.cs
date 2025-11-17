@@ -13,11 +13,17 @@ namespace Gevlee.FireflyReceipt.Application.Models
 
         [ObservableProperty]
         private decimal amount;
+        
+        [ObservableProperty]
+        private decimal? foreignAmount;
 
         [ObservableProperty]
         private string type;
 
         [ObservableProperty]
         private string currency;
+        
+        [ObservableProperty]
+        private string foreignCurrency;
     }
 }

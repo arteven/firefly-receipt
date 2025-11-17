@@ -14,26 +14,41 @@
   <UserControl.Resources>
     <converters:AmountConverter x:Key="amountConverter" />
     <converters:BoolToBrushConverter x:Key="boolToGreenColorConverter" Brush="#bfffd0" />
+    <converters:BoolToBrushConverter x:Key="boolToGreenBorderConverter" Brush="#4CAF50" />
+    <converters:BoolToThicknessConverter x:Key="boolToThicknessConverter" />
   </UserControl.Resources>
-  <ScrollViewer>
-    <ItemsControl ItemsSource="{Binding Transactions}">
-      <ItemsControl.ItemTemplate>
+  <Grid RowDefinitions="*,Auto">
+    <ListBox Grid.Row="0"
+             ItemsSource="{Binding Transactions}"
+             SelectedItem="{Binding SelectedTransaction}"
+             SelectionMode="Single"
+             Background="Transparent">
+      <ListBox.ItemTemplate>
         <DataTemplate>
-          <Grid ColumnDefinitions="1*,100,100,50" MinHeight="20" Background="{Binding HasAssignedReceipt, Converter={StaticResource boolToGreenColorConverter}}">
-            <Grid.Styles>
-              <Style Selector="TextBlock">
-                <Setter Property="VerticalAlignment" Value="Center" />
-              </Style>
-            </Grid.Styles>
-            <TextBlock Grid.Column="0" Text="{Binding Description}" />
-            <TextBlock Grid.Column="1" Text="{Binding Amount, Converter={StaticResource amountConverter}}" />
-            <TextBlock Grid.Column="2" Text="{Binding Currency}" />
-            <Button Grid.Column="3" Command="{Binding $parent[UserControl].DataContext.OnAssign}" CommandParameter="{Binding Id}">
-              Assign
-            </Button>
-          </Grid>
+          <Border BorderBrush="{Binding HasAssignedReceipt, Converter={StaticResource boolToGreenBorderConverter}}"
+                  BorderThickness="{Binding HasAssignedReceipt, Converter={StaticResource boolToThicknessConverter}}">
+            <Grid ColumnDefinitions="1*,100,100,50" MinHeight="20">
+              <Grid.Styles>
+                <Style Selector="TextBlock">
+                  <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+              </Grid.Styles>
+              <TextBlock Grid.Column="0" Text="{Binding Description}" />
+              <TextBlock Grid.Column="1" Text="{Binding Amount, Converter={StaticResource amountConverter}}" />
+              <TextBlock Grid.Column="2" Text="{Binding Currency}" />
+              <Button Grid.Column="3" Command="{Binding $parent[UserControl].DataContext.OnAssign}" CommandParameter="{Binding Id}">
+                Assign
+              </Button>
+            </Grid>
+          </Border>
         </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
-  </ScrollViewer>
+      </ListBox.ItemTemplate>
+    </ListBox>
+    <Button Grid.Row="1"
+            Command="{Binding AutoMatchCommand}"
+            HorizontalAlignment="Stretch"
+            Margin="5">
+      Auto-Match
+    </Button>
+  </Grid>
 </UserControl>
