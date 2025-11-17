@@ -54,8 +54,8 @@ namespace Gevlee.FireflyReceipt.Application.Models.Firefly
         //[JsonPropertyName("currency_id")]
         //public long CurrencyId { get; set; }
 
-        //[JsonPropertyName("currency_code")]
-        //public string CurrencyCode { get; set; }
+        [JsonPropertyName("currency_code")]
+        public string CurrencyCode { get; set; }
 
         //[JsonPropertyName("currency_symbol")]
         //public string CurrencySymbol { get; set; }

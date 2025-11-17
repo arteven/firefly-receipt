@@ -23,7 +23,7 @@ namespace Gevlee.FireflyReceipt.Application.Services
                     Id = x.TransactionJournalId,
                     Description = x.Description,
                     Amount = x.Amount,
-                    Currency = x.CurrencyName,
+                    Currency = x.CurrencyCode,
                     Type = x.Type
                 });
         }
