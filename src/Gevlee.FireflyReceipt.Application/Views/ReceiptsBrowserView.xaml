@@ -9,11 +9,11 @@
     <converters:FileNameConverter x:Key="fileNameConverter" />
   </UserControl.Resources>
   <Grid ColumnDefinitions="1*" RowDefinitions="30,1*, 30">
-    <ComboBox Items="{Binding Receipts}" SelectedItem="{Binding SelectedRecipt, Mode=TwoWay}" SelectedIndex="{Binding SelectedReciptIndex, Mode=TwoWay}">
+    <ComboBox ItemsSource="{Binding Receipts}" SelectedItem="{Binding SelectedRecipt, Mode=TwoWay}" SelectedIndex="{Binding SelectedReciptIndex, Mode=TwoWay}">
       <ComboBox.ItemTemplate>
         <DataTemplate>
           <StackPanel Orientation="Horizontal" MinWidth="30">
-            <TextBlock VerticalAlignment="Center" Text="{Binding Path, Converter={StaticResource fileNameConverter}}}"/>
+            <TextBlock VerticalAlignment="Center" Text="{Binding Path, Converter={StaticResource fileNameConverter}}"/>
             <Image Source="resm:Gevlee.FireflyReceipt.Application.Assets.tick.png?assembly=Gevlee.FireflyReceipt.Application" IsVisible="{Binding IsAlreadyAssigned}"/>
           </StackPanel>
         </DataTemplate>

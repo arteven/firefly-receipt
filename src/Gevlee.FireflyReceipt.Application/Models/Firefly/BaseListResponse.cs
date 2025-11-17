@@ -1,28 +1,28 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Gevlee.FireflyReceipt.Application.Models.Firefly
 {
     public class BaseListResponse<TAttributes>
     {
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public Datum<TAttributes>[] Data { get; set; }
 
-        [JsonProperty("meta")]
+        [JsonPropertyName("meta")]
         public Meta Meta { get; set; }
 
-        [JsonProperty("links")]
+        [JsonPropertyName("links")]
         public ResponseLinks Links { get; set; }
     }
 
     public class BaseResponse<TAttributes>
     {
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public Datum<TAttributes> Data { get; set; }
 
-        [JsonProperty("meta")]
+        [JsonPropertyName("meta")]
         public Meta Meta { get; set; }
 
-        [JsonProperty("links")]
+        [JsonPropertyName("links")]
         public ResponseLinks Links { get; set; }
     }
 }

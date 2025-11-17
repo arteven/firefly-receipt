@@ -7,10 +7,11 @@ namespace Gevlee.FireflyReceipt.Application
 {
     public class ViewLocator : IDataTemplate
     {
-        public bool SupportsRecycling => false;
-
-        public IControl Build(object data)
+        public Control Build(object data)
         {
+            if (data is null)
+                return null;
+
             var name = data.GetType().FullName.Replace("ViewModel", "View");
             var type = Type.GetType(name);
 

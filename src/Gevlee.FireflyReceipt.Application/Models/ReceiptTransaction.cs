@@ -1,13 +1,13 @@
-﻿using PropertyChanged;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Gevlee.FireflyReceipt.Application.Models
 {
     public partial class TransactionsListViewModel
     {
-        [AddINotifyPropertyChangedInterface]
-        public class ReceiptTransaction : FlatTransaction
+        public partial class ReceiptTransaction : FlatTransaction
         {
-            public bool HasAssignedReceipt { get; set; }
+            [ObservableProperty]
+            private bool hasAssignedReceipt;
 
             public static ReceiptTransaction FromFlatTransaction(FlatTransaction flatTransaction)
             {

@@ -3,12 +3,10 @@ using Gevlee.FireflyReceipt.Application.Settings;
 using Gevlee.FireflyReceipt.Application.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ReactiveUI;
+using Microsoft.Extensions.Options;
 using Serilog;
-using Splat;
-using Splat.Microsoft.Extensions.DependencyInjection;
-using Splat.Microsoft.Extensions.Logging;
 using System;
+using System.Net.Http.Headers;
 
 namespace Gevlee.FireflyReceipt.Application
 {
@@ -21,11 +19,6 @@ namespace Gevlee.FireflyReceipt.Application
               //.UseSerilog()
               .ConfigureServices((context, services) =>
               {
-                  services.UseMicrosoftDependencyResolver();
-                  var resolver = Locator.CurrentMutable;
-                  resolver.InitializeSplat();
-                  resolver.InitializeReactiveUI();
-
                   ConfigureServices(context, services);
               })
               .ConfigureAppConfiguration(builder =>
@@ -33,10 +26,6 @@ namespace Gevlee.FireflyReceipt.Application
                   //builder.SetBasePath(Directory.GetCurrentDirectory())
                   //  .AddJsonFile("config.json")
                   //  .AddJsonFile("config.dev.json", true);
-              })
-              .ConfigureLogging(loggingBuilder =>
-              {
-                  loggingBuilder.AddSplat();
               })
 #if DEBUG
               .UseEnvironment(Environments.Development)
@@ -52,9 +41,22 @@ namespace Gevlee.FireflyReceipt.Application
             services.AddSingleton<MainWindowViewModel>();
             services.AddTransient<ReceiptsBrowserViewModel>();
             services.AddTransient<ReceiptsSearchSettingsViewModel>();
+            services.AddTransient<TransactionsListViewModel>();
             services.AddTransient<IAttachmentService, AttachmentService>();
             services.AddTransient<ITransactionService, TransactionService>();
-            services.AddTransient<IFireflyClient, FireflyClient>();
+
+            // Configure HttpClient for FireflyClient with base address and authentication
+            services.AddHttpClient<IFireflyClient, FireflyClient>((serviceProvider, client) =>
+            {
+                var settings = serviceProvider.GetRequiredService<IOptions<GeneralSettings>>().Value;
+                var baseUrl = !string.IsNullOrWhiteSpace(settings.FireflyUrl)
+                    ? settings.FireflyUrl.TrimEnd('/')
+                    : string.Empty;
+
+                client.BaseAddress = new Uri(baseUrl);
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", settings.FireflyPersonalAccessToken);
+            });
         }
     }
 }

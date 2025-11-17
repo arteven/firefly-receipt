@@ -1,19 +1,33 @@
-﻿using System;
-using ReactiveUI;
+﻿using System.ComponentModel;
 
 namespace Gevlee.FireflyReceipt.Application.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel()
+        public MainWindowViewModel(
+            ReceiptsSearchSettingsViewModel receiptsSearchSettingsModel,
+            ReceiptsBrowserViewModel receiptsBrowserModel,
+            TransactionsListViewModel transactionsListModel)
         {
-            this.WhenAnyValue(x => x.ReceiptsBrowserModel.SelectedRecipt).Subscribe(receipt => TransactionsListModel.CurrentReceipt = receipt);
+            ReceiptsSearchSettingsModel = receiptsSearchSettingsModel;
+            ReceiptsBrowserModel = receiptsBrowserModel;
+            TransactionsListModel = transactionsListModel;
+
+            ReceiptsBrowserModel.PropertyChanged += OnReceiptsBrowserPropertyChanged;
         }
 
-        public ReceiptsSearchSettingsViewModel ReceiptsSearchSettingsModel { get; } = new ReceiptsSearchSettingsViewModel();
+        public ReceiptsSearchSettingsViewModel ReceiptsSearchSettingsModel { get; }
 
-        public ReceiptsBrowserViewModel ReceiptsBrowserModel { get; } = new ReceiptsBrowserViewModel();
+        public ReceiptsBrowserViewModel ReceiptsBrowserModel { get; }
 
-        public TransactionsListViewModel TransactionsListModel { get; } = new TransactionsListViewModel();
+        public TransactionsListViewModel TransactionsListModel { get; }
+
+        private void OnReceiptsBrowserPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ReceiptsBrowserViewModel.SelectedRecipt))
+            {
+                TransactionsListModel.CurrentReceipt = ReceiptsBrowserModel.SelectedRecipt;
+            }
+        }
     }
 }

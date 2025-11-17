@@ -1,19 +1,23 @@
-﻿using PropertyChanged;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Gevlee.FireflyReceipt.Application.Models
 {
-    [AddINotifyPropertyChangedInterface]
     [Equals(DoNotAddEqualityOperators = true)]
-    public class FlatTransaction
+    public partial class FlatTransaction : ObservableObject
     {
-        public long Id { get; set; }
+        [ObservableProperty]
+        private long id;
 
-        public string Description { get; set; }
+        [ObservableProperty]
+        private string description;
 
-        public decimal Amount { get; set; }
+        [ObservableProperty]
+        private decimal amount;
 
-        public string Type { get; set; }
+        [ObservableProperty]
+        private string type;
 
-        public string Currency { get; set; }
+        [ObservableProperty]
+        private string currency;
     }
 }

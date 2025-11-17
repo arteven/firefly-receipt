@@ -24,14 +24,14 @@ namespace Gevlee.FireflyReceipt.Application.Services
 
             while (!lastPage)
             {
-                var response = await Client.GetAttatchementsAsync(page);
+                var response = await Client.GetAttachmentsAsync(page);
                 result.AddRange(response.Data
                     .Where(x => x.Attributes.AttachableType == "TransactionJournal")
                     .Select(
                     x => new AlreadyAssignedReceipt
                     {
                         Filename = x.Attributes.Filename,
-                        TransactionId = x.Attributes.AttachableId
+                        TransactionId = int.Parse(x.Attributes.AttachableId)
                     }));
                 lastPage = response.Meta.Pagination.TotalPages <= page;
                 page++;
@@ -45,12 +45,12 @@ namespace Gevlee.FireflyReceipt.Application.Services
             var fileName = System.IO.Path.GetFileName(imgPath);
             var createAttachmentResponse = await Client.CreateAttachmentAsync(new CreateAttachmentRequest
             {
-                AttachableType = "TransactionJournal",
-                AttachableId = transactionId,
+                AttachableType = AttachableType.TransactionJournal,
+                AttachableId = transactionId.ToString(),
                 Filename = fileName
             });
 
-            await Client.UploadAttachment(createAttachmentResponse.Data.Id, File.ReadAllBytes(imgPath), fileName);
+            await Client.UploadAttachment(createAttachmentResponse.Data.Id, File.ReadAllBytes(imgPath));
         }
     }
 }
