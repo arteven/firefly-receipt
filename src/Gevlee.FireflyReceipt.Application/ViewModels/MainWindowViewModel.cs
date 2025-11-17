@@ -5,15 +5,22 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel()
+        public MainWindowViewModel(
+            ReceiptsSearchSettingsViewModel receiptsSearchSettingsModel,
+            ReceiptsBrowserViewModel receiptsBrowserModel,
+            TransactionsListViewModel transactionsListModel)
         {
+            ReceiptsSearchSettingsModel = receiptsSearchSettingsModel;
+            ReceiptsBrowserModel = receiptsBrowserModel;
+            TransactionsListModel = transactionsListModel;
+
             this.WhenAnyValue(x => x.ReceiptsBrowserModel.SelectedRecipt).Subscribe(receipt => TransactionsListModel.CurrentReceipt = receipt);
         }
 
-        public ReceiptsSearchSettingsViewModel ReceiptsSearchSettingsModel { get; } = new ReceiptsSearchSettingsViewModel();
+        public ReceiptsSearchSettingsViewModel ReceiptsSearchSettingsModel { get; }
 
-        public ReceiptsBrowserViewModel ReceiptsBrowserModel { get; } = new ReceiptsBrowserViewModel();
+        public ReceiptsBrowserViewModel ReceiptsBrowserModel { get; }
 
-        public TransactionsListViewModel TransactionsListModel { get; } = new TransactionsListViewModel();
+        public TransactionsListViewModel TransactionsListModel { get; }
     }
 }

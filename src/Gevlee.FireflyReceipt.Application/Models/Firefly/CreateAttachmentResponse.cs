@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace Gevlee.FireflyReceipt.Application.Models.Firefly
 {
@@ -7,40 +7,40 @@ namespace Gevlee.FireflyReceipt.Application.Models.Firefly
     {
         public class Attributes
         {
-            [JsonProperty("created_at")]
+            [JsonPropertyName("created_at")]
             public DateTimeOffset CreatedAt { get; set; }
 
-            [JsonProperty("updated_at")]
+            [JsonPropertyName("updated_at")]
             public DateTimeOffset UpdatedAt { get; set; }
 
-            [JsonProperty("filename")]
+            [JsonPropertyName("filename")]
             public string Filename { get; set; }
 
-            [JsonProperty("attachable_type")]
+            [JsonPropertyName("attachable_type")]
             public string AttachableType { get; set; }
 
-            [JsonProperty("attachable_id")]
+            [JsonPropertyName("attachable_id")]
             public long AttachableId { get; set; }
 
-            [JsonProperty("md5")]
+            [JsonPropertyName("md5")]
             public string Md5 { get; set; }
 
-            [JsonProperty("download_uri")]
+            [JsonPropertyName("download_uri")]
             public Uri DownloadUri { get; set; }
 
-            [JsonProperty("upload_uri")]
+            [JsonPropertyName("upload_uri")]
             public Uri UploadUri { get; set; }
 
-            [JsonProperty("title")]
+            [JsonPropertyName("title")]
             public string Title { get; set; }
 
-            [JsonProperty("notes")]
+            [JsonPropertyName("notes")]
             public string Notes { get; set; }
 
-            [JsonProperty("mime")]
+            [JsonPropertyName("mime")]
             public string Mime { get; set; }
 
-            [JsonProperty("size")]
+            [JsonPropertyName("size")]
             public long Size { get; set; }
         }
     }

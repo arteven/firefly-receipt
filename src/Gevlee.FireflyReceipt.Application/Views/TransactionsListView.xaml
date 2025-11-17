@@ -16,7 +16,7 @@
     <converters:BoolToBrushConverter x:Key="boolToGreenColorConverter" Brush="#bfffd0" />
   </UserControl.Resources>
   <ScrollViewer>
-    <ItemsControl Items="{Binding Transactions}">
+    <ItemsControl ItemsSource="{Binding Transactions}">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
           <Grid ColumnDefinitions="1*,100,100,50" MinHeight="20" Background="{Binding HasAssignedReceipt, Converter={StaticResource boolToGreenColorConverter}}">

@@ -1,5 +1,5 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Gevlee.FireflyReceipt.Application.Models.Firefly
 {
@@ -9,55 +9,55 @@ namespace Gevlee.FireflyReceipt.Application.Models.Firefly
 
     public class TransactionsAttributes
     {
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public DateTimeOffset CreatedAt { get; set; }
 
-        [JsonProperty("updated_at")]
+        [JsonPropertyName("updated_at")]
         public DateTimeOffset UpdatedAt { get; set; }
 
-        [JsonProperty("user")]
+        [JsonPropertyName("user")]
         public long User { get; set; }
 
-        [JsonProperty("group_title")]
+        [JsonPropertyName("group_title")]
         public string GroupTitle { get; set; }
 
-        [JsonProperty("transactions")]
+        [JsonPropertyName("transactions")]
         public Transaction[] Transactions { get; set; }
     }
 
     public class Transaction
     {
-        //[JsonProperty("user")]
+        //[JsonPropertyName("user")]
         //public long User { get; set; }
 
-        [JsonProperty("transaction_journal_id")]
+        [JsonPropertyName("transaction_journal_id")]
         public long TransactionJournalId { get; set; }
 
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public string Type { get; set; }
 
-        //[JsonProperty("date")]
+        //[JsonPropertyName("date")]
         //public DateTimeOffset Date { get; set; }
 
-        [JsonProperty("amount")]
+        [JsonPropertyName("amount")]
         public decimal Amount { get; set; }
 
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        //[JsonProperty("order")]
+        //[JsonPropertyName("order")]
         //public long Order { get; set; }
 
-        //[JsonProperty("currency_id")]
+        //[JsonPropertyName("currency_id")]
         //public long CurrencyId { get; set; }
 
-        //[JsonProperty("currency_code")]
+        //[JsonPropertyName("currency_code")]
         //public string CurrencyCode { get; set; }
 
-        //[JsonProperty("currency_symbol")]
+        //[JsonPropertyName("currency_symbol")]
         //public string CurrencySymbol { get; set; }
 
-        [JsonProperty("currency_name")]
+        [JsonPropertyName("currency_name")]
         public string CurrencyName { get; set; }
 
         //[JsonProperty("currency_decimal_places")]

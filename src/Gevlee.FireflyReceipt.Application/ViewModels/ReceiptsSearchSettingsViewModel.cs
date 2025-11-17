@@ -1,15 +1,14 @@
 ﻿using Gevlee.FireflyReceipt.Application.Settings;
 using Microsoft.Extensions.Options;
 using ReactiveUI;
-using Splat;
 
 namespace Gevlee.FireflyReceipt.Application.ViewModels
 {
     public class ReceiptsSearchSettingsViewModel : ViewModelBase
     {
-        public ReceiptsSearchSettingsViewModel()
+        public ReceiptsSearchSettingsViewModel(IOptions<GeneralSettings> options)
         {
-            var settings = Locator.Current.GetService<IOptions<GeneralSettings>>().Value;
+            var settings = options.Value;
             ReceiptsDir = settings.ReceiptsDir;
             FilterRegex = settings.FilterRegex;
         }

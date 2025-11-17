@@ -1,78 +1,106 @@
-﻿namespace Gevlee.FireflyReceipt.Application.Models.Firefly
-{
-    using Newtonsoft.Json;
+﻿using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
+namespace Gevlee.FireflyReceipt.Application.Models.Firefly
+{
     public class Datum<TAttributes>
     {
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public string Type { get; set; }
 
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         [JsonConverter(typeof(ParseStringConverter))]
         public long Id { get; set; }
 
-        [JsonProperty("attributes")]
+        [JsonPropertyName("attributes")]
         public TAttributes Attributes { get; set; }
 
-        [JsonProperty("links")]
+        [JsonPropertyName("links")]
         public Links Links { get; set; }
     }
 
 
     public class Links
     {
-        [JsonProperty("0")]
+        [JsonPropertyName("0")]
         public Link Link { get; set; }
 
-        [JsonProperty("self")]
+        [JsonPropertyName("self")]
         public string Self { get; set; }
     }
 
     public class Link
     {
-        [JsonProperty("rel")]
+        [JsonPropertyName("rel")]
         public string Rel { get; set; }
 
-        [JsonProperty("uri")]
+        [JsonPropertyName("uri")]
         public string Uri { get; set; }
     }
 
     public class ResponseLinks
     {
-        [JsonProperty("self")]
+        [JsonPropertyName("self")]
         public string Self { get; set; }
 
-        [JsonProperty("first")]
+        [JsonPropertyName("first")]
         public string First { get; set; }
 
-        [JsonProperty("prev")]
+        [JsonPropertyName("prev")]
         public string Prev { get; set; }
 
-        [JsonProperty("last")]
+        [JsonPropertyName("last")]
         public string Last { get; set; }
     }
 
     public class Meta
     {
-        [JsonProperty("pagination")]
+        [JsonPropertyName("pagination")]
         public Pagination Pagination { get; set; }
     }
 
     public class Pagination
     {
-        [JsonProperty("total")]
+        [JsonPropertyName("total")]
         public long Total { get; set; }
 
-        [JsonProperty("count")]
+        [JsonPropertyName("count")]
         public long Count { get; set; }
 
-        [JsonProperty("per_page")]
+        [JsonPropertyName("per_page")]
         public long PerPage { get; set; }
 
-        [JsonProperty("current_page")]
+        [JsonPropertyName("current_page")]
         public long CurrentPage { get; set; }
 
-        [JsonProperty("total_pages")]
+        [JsonPropertyName("total_pages")]
         public long TotalPages { get; set; }
+    }
+
+    // System.Text.Json converter for parsing strings as longs
+    public class ParseStringConverter : JsonConverter<long>
+    {
+        public override long Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                if (long.TryParse(reader.GetString(), out long value))
+                {
+                    return value;
+                }
+                throw new JsonException("Cannot parse string as long");
+            }
+            else if (reader.TokenType == JsonTokenType.Number)
+            {
+                return reader.GetInt64();
+            }
+            throw new JsonException("Unexpected token type");
+        }
+
+        public override void Write(Utf8JsonWriter writer, long value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString());
+        }
     }
 }

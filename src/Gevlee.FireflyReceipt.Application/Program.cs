@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using Avalonia.Logging.Serilog;
 using Avalonia.Platform;
 using Avalonia.ReactiveUI;
 using Serilog;
@@ -30,45 +29,9 @@ namespace Gevlee.FireflyReceipt.Application
 
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
-        {
-            var builder = AppBuilder.Configure<App>()
-                //.LogToDebug(Avalonia.Logging.LogEventLevel.Debug)
+            => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
+                .LogToTrace()
                 .UseReactiveUI();
-            var runtime = builder.RuntimePlatform.GetRuntimeInfo();
-
-            switch (runtime.OperatingSystem)
-            {
-                case OperatingSystemType.OSX:
-                    builder.UseAvaloniaNative()
-                        .With(new AvaloniaNativePlatformOptions
-                        {
-                            UseGpu = true,
-                            UseDeferredRendering = true
-                        })
-                        .UseSkia();
-                    break;
-
-                case OperatingSystemType.Linux:
-                    builder.UseX11()
-                        .With(new X11PlatformOptions
-                        {
-                            UseGpu = true
-                        })
-                        .UseSkia();
-                    break;
-
-                default:
-                    builder.UseWin32()
-                        .With(new Win32PlatformOptions
-                        {
-                            UseDeferredRendering = true
-                        })
-                        .UseSkia();
-                    break;
-            }
-
-            return builder;
-        }
     }
 }
