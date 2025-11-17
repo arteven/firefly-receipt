@@ -16,6 +16,7 @@ namespace Gevlee.FireflyReceipt.Application.Models.Firefly
         public DateTimeOffset UpdatedAt { get; set; }
 
         [JsonPropertyName("user")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
         public long User { get; set; }
 
         [JsonPropertyName("group_title")]
@@ -31,6 +32,7 @@ namespace Gevlee.FireflyReceipt.Application.Models.Firefly
         //public long User { get; set; }
 
         [JsonPropertyName("transaction_journal_id")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
         public long TransactionJournalId { get; set; }
 
         [JsonPropertyName("type")]
@@ -40,6 +42,7 @@ namespace Gevlee.FireflyReceipt.Application.Models.Firefly
         //public DateTimeOffset Date { get; set; }
 
         [JsonPropertyName("amount")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
         public decimal Amount { get; set; }
 
         [JsonPropertyName("description")]

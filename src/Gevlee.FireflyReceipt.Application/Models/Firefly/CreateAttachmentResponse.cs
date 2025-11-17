@@ -20,6 +20,7 @@ namespace Gevlee.FireflyReceipt.Application.Models.Firefly
             public string AttachableType { get; set; }
 
             [JsonPropertyName("attachable_id")]
+            [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
             public long AttachableId { get; set; }
 
             [JsonPropertyName("md5")]
@@ -41,6 +42,7 @@ namespace Gevlee.FireflyReceipt.Application.Models.Firefly
             public string Mime { get; set; }
 
             [JsonPropertyName("size")]
+            [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
             public long Size { get; set; }
         }
     }

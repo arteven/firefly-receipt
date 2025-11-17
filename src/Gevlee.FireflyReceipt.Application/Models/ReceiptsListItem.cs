@@ -1,15 +1,16 @@
-﻿using PropertyChanged;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Gevlee.FireflyReceipt.Application.Models
 {
-    [AddINotifyPropertyChangedInterface]
     [Equals(DoNotAddEqualityOperators = true)]
-    public class ReceiptsListItem
+    public partial class ReceiptsListItem : ObservableObject
     {
-        public string Path { get; set; }
+        [ObservableProperty]
+        private string path;
 
-        [AlsoNotifyFor(nameof(IsAlreadyAssigned))]
-        public long? TransactionId { get; set; }
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsAlreadyAssigned))]
+        private long? transactionId;
 
         public bool IsAlreadyAssigned => TransactionId.HasValue;
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using ReactiveUI;
+﻿using System.ComponentModel;
 
 namespace Gevlee.FireflyReceipt.Application.ViewModels
 {
@@ -14,7 +13,7 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
             ReceiptsBrowserModel = receiptsBrowserModel;
             TransactionsListModel = transactionsListModel;
 
-            this.WhenAnyValue(x => x.ReceiptsBrowserModel.SelectedRecipt).Subscribe(receipt => TransactionsListModel.CurrentReceipt = receipt);
+            ReceiptsBrowserModel.PropertyChanged += OnReceiptsBrowserPropertyChanged;
         }
 
         public ReceiptsSearchSettingsViewModel ReceiptsSearchSettingsModel { get; }
@@ -22,5 +21,13 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
         public ReceiptsBrowserViewModel ReceiptsBrowserModel { get; }
 
         public TransactionsListViewModel TransactionsListModel { get; }
+
+        private void OnReceiptsBrowserPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ReceiptsBrowserViewModel.SelectedRecipt))
+            {
+                TransactionsListModel.CurrentReceipt = ReceiptsBrowserModel.SelectedRecipt;
+            }
+        }
     }
 }

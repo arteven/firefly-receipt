@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Gevlee.FireflyReceipt.Application.Services
@@ -14,7 +15,8 @@ namespace Gevlee.FireflyReceipt.Application.Services
         private readonly HttpClient _httpClient;
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         };
 
         public FireflyClient(HttpClient httpClient)
@@ -79,7 +81,7 @@ namespace Gevlee.FireflyReceipt.Application.Services
 
                 return await response.Content.ReadFromJsonAsync<CreateAttachmentResponse>(_jsonOptions);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }

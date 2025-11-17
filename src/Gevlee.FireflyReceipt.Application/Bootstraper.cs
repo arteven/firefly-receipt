@@ -4,11 +4,7 @@ using Gevlee.FireflyReceipt.Application.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using ReactiveUI;
 using Serilog;
-using Splat;
-using Splat.Microsoft.Extensions.DependencyInjection;
-using Splat.Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http.Headers;
 
@@ -23,13 +19,6 @@ namespace Gevlee.FireflyReceipt.Application
               //.UseSerilog()
               .ConfigureServices((context, services) =>
               {
-                  // Step 1: Register the container with Splat
-                  services.UseMicrosoftDependencyResolver();
-                  var resolver = Locator.CurrentMutable;
-                  resolver.InitializeSplat();
-                  resolver.InitializeReactiveUI();
-
-                  // Step 2: Configure application services
                   ConfigureServices(context, services);
               })
               .ConfigureAppConfiguration(builder =>
@@ -42,9 +31,6 @@ namespace Gevlee.FireflyReceipt.Application
               .UseEnvironment(Environments.Development)
 #endif
               .Build();
-
-            // Step 3: Re-register the built container with Splat
-            host.Services.UseMicrosoftDependencyResolver();
 
             return host.Services;
         }

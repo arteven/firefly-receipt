@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ReactiveUI;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Gevlee.FireflyReceipt.Application.ViewModels
 {
-    public class ViewModelBase : ReactiveObject
+    public class ViewModelBase : ObservableObject
     {
     }
 }

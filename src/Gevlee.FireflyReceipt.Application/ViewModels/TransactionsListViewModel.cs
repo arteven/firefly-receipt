@@ -1,19 +1,17 @@
-﻿using Gevlee.FireflyReceipt.Application.Models;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Gevlee.FireflyReceipt.Application.Models;
 using Gevlee.FireflyReceipt.Application.Services;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using static Gevlee.FireflyReceipt.Application.Models.TransactionsListViewModel;
 
 namespace Gevlee.FireflyReceipt.Application.ViewModels
 {
-    public class TransactionsListViewModel : ReactiveObject, IActivatableViewModel
+    public class TransactionsListViewModel : ObservableObject
     {
         private ObservableCollection<ReceiptTransaction> transactions;
         private ReceiptsListItem currentReceipt;
@@ -28,28 +26,29 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
             // Initialize to avoid null reference
             Transactions = new ObservableCollection<ReceiptTransaction>();
 
-            this.WhenActivated(disposables =>
-            {
-                LoadTransactions()
-                    .DisposeWith(disposables);
+            OnAssign = new AsyncRelayCommand<long>(AssignReceipt, CanAssignReceipt);
 
-                this.WhenAnyValue(x => x.CurrentReceipt)
-                    .ObserveOn(RxApp.MainThreadScheduler)
-                    .Subscribe(_ => RefreshAssignment())
-                    .DisposeWith(disposables);
-            });
+            _ = LoadTransactions();
         }
 
-        public ViewModelActivator Activator { get; } = new ViewModelActivator();
+        public ObservableCollection<ReceiptTransaction> Transactions { get => transactions; set => SetProperty(ref transactions, value); }
 
-        public ObservableCollection<ReceiptTransaction> Transactions { get => transactions; set => this.RaiseAndSetIfChanged(ref transactions, value); }
+        public ReceiptsListItem CurrentReceipt
+        {
+            get => currentReceipt;
+            set
+            {
+                if (SetProperty(ref currentReceipt, value))
+                {
+                    RefreshAssignment();
+                    OnAssign.NotifyCanExecuteChanged();
+                }
+            }
+        }
 
-        public ReceiptsListItem CurrentReceipt { get => currentReceipt; set => this.RaiseAndSetIfChanged(ref currentReceipt, value); }
+        public AsyncRelayCommand<long> OnAssign { get; }
 
-        public ReactiveCommand<long, Unit> OnAssign => ReactiveCommand.CreateFromTask<long>(
-            AssignReceipt,
-            this.WhenAnyValue(x => x.CurrentReceipt)
-                .Select(receipt => receipt != null && !receipt.TransactionId.HasValue));
+        private bool CanAssignReceipt(long arg) => CurrentReceipt != null && !CurrentReceipt.TransactionId.HasValue;
 
         private async Task AssignReceipt(long arg)
         {
@@ -58,21 +57,19 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
             RefreshAssignment();
         }
 
-        private IDisposable LoadTransactions()
+        private async Task LoadTransactions()
         {
-            return Observable.FromAsync(transactionService.GetFlatTransactions)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Catch<IEnumerable<FlatTransaction>, Exception>(ex =>
-                {
-                    System.Diagnostics.Debug.WriteLine($"Error loading transactions: {ex}");
-                    // Return empty collection on error so UI doesn't break
-                    return Observable.Return(Enumerable.Empty<FlatTransaction>());
-                })
-                .Subscribe(result =>
-                {
-                    Transactions = new ObservableCollection<ReceiptTransaction>(result.Select(ReceiptTransaction.FromFlatTransaction).ToList());
-                    RefreshAssignment();
-                });
+            try
+            {
+                var result = await transactionService.GetFlatTransactions();
+                Transactions = new ObservableCollection<ReceiptTransaction>(result.Select(ReceiptTransaction.FromFlatTransaction).ToList());
+                RefreshAssignment();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading transactions: {ex}");
+                // Keep empty collection on error so UI doesn't break
+            }
         }
 
         private void RefreshAssignment()
