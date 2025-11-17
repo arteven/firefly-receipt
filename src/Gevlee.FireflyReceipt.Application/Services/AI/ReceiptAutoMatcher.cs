@@ -159,8 +159,13 @@ namespace Gevlee.FireflyReceipt.Application.Services.AI
 
             // Find transactions with matching amount and currency
             var candidates = transactionsList
-                .Where(t => t.Amount.Equals(receiptAnalysis.TotalAmount))
-                .Where(t => string.Equals(t.Currency, receiptAnalysis.Currency, StringComparison.OrdinalIgnoreCase))
+                .Where(t =>
+                    (t.Amount.Equals(receiptAnalysis.TotalAmount) && string.Equals(t.Currency, receiptAnalysis.Currency,
+                        StringComparison.OrdinalIgnoreCase) || (t.ForeignAmount.HasValue &&
+                                                                t.ForeignAmount.Equals(receiptAnalysis.TotalAmount) &&
+                                                                string.Equals(t.ForeignCurrency,
+                                                                    receiptAnalysis.Currency,
+                                                                    StringComparison.OrdinalIgnoreCase))))
                 .ToList();
 
             if (!candidates.Any())

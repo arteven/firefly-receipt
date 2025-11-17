@@ -107,28 +107,13 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
             IsAutoMatching = true;
             try
             {
-                // Convert ReceiptTransaction to FlatTransaction for the matcher
-                var flatTransactions = Transactions.Select(t => new FlatTransaction
-                {
-                    Id = t.Id,
-                    Amount = t.Amount,
-                    Currency = t.Currency,
-                    Description = t.Description,
-                    Type = t.Type
-                }).ToList();
-
                 // Call the auto-matcher
-                var matchedTransaction = await receiptAutoMatcher.MatchReceiptAsync(CurrentReceipt.Path, flatTransactions);
+                var matchedTransaction = await receiptAutoMatcher.MatchReceiptAsync(CurrentReceipt.Path, Transactions);
 
                 if (matchedTransaction != null)
                 {
-                    // Find and select the matched transaction (triggers auto-scroll)
-                    var transactionToSelect = Transactions.FirstOrDefault(t => t.Id == matchedTransaction.Id);
-                    if (transactionToSelect != null)
-                    {
-                        AutoMatchedTransactionId = matchedTransaction.Id;
-                        SelectedTransaction = transactionToSelect;
-                    }
+                    AutoMatchedTransactionId = matchedTransaction.Id;
+                    SelectedTransaction = (ReceiptTransaction)matchedTransaction;
                 }
                 else
                 {
