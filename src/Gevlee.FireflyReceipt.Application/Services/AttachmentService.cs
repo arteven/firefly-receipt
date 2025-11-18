@@ -1,5 +1,7 @@
 ﻿using Gevlee.FireflyReceipt.Application.Models;
 using Gevlee.FireflyReceipt.Application.Models.Firefly;
+using Gevlee.FireflyReceipt.Application.Settings;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,9 +11,12 @@ namespace Gevlee.FireflyReceipt.Application.Services
 {
     public class AttachmentService : IAttachmentService
     {
-        public AttachmentService(IFireflyClient client)
+        private readonly GeneralSettings _settings;
+
+        public AttachmentService(IFireflyClient client, IOptions<GeneralSettings> settings)
         {
             Client = client;
+            _settings = settings.Value;
         }
 
         private IFireflyClient Client { get; }
@@ -40,7 +45,7 @@ namespace Gevlee.FireflyReceipt.Application.Services
             return result;
         }
 
-        public async Task AssignReceipt(string imgPath, long transactionId)
+        public async Task<bool> AssignReceipt(string imgPath, long transactionId)
         {
             var fileName = System.IO.Path.GetFileName(imgPath);
             var createAttachmentResponse = await Client.CreateAttachmentAsync(new CreateAttachmentRequest
@@ -51,6 +56,15 @@ namespace Gevlee.FireflyReceipt.Application.Services
             });
 
             await Client.UploadAttachment(createAttachmentResponse.Data.Id, File.ReadAllBytes(imgPath));
+
+            // Delete file if setting is enabled
+            if (_settings.DeleteOnAssign && File.Exists(imgPath))
+            {
+                File.Delete(imgPath);
+                return true; // File was deleted
+            }
+
+            return false; // File was not deleted
         }
     }
 }
