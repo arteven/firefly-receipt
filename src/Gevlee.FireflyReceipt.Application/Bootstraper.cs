@@ -11,6 +11,7 @@ using Serilog;
 using System;
 using System.IO;
 using System.Net.Http.Headers;
+using Microsoft.Extensions.Configuration;
 
 namespace Gevlee.FireflyReceipt.Application
 {
@@ -53,6 +54,7 @@ namespace Gevlee.FireflyReceipt.Application
             services.AddTransient<TransactionsListViewModel>();
             services.AddTransient<IAttachmentService, AttachmentService>();
             services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<IReceiptImageProvider, ReceiptImageProvider>();
 
             // Configure HttpClient for FireflyClient with base address and authentication
             services.AddHttpClient<IFireflyClient, FireflyClient>((serviceProvider, client) =>

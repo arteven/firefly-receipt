@@ -17,12 +17,14 @@ namespace Gevlee.FireflyReceipt.Application.Services.AI
         private readonly GeneralSettings _settings;
         private readonly IChatClient _chatClient;
         private readonly ILogger _logger;
+        private readonly IReceiptImageProvider _receiptImageProvider;
 
-        public ReceiptAutoMatcher(IOptions<GeneralSettings> settings, IChatClient chatClient)
+        public ReceiptAutoMatcher(IOptions<GeneralSettings> settings, IChatClient chatClient, IReceiptImageProvider receiptImageProvider)
         {
             _settings = settings.Value;
             _chatClient = chatClient;
             _logger = Log.Logger;
+            _receiptImageProvider = receiptImageProvider;
         }
 
         public async Task<FlatTransaction?> MatchReceiptAsync(string receiptImagePath, IEnumerable<FlatTransaction> transactions)
@@ -31,8 +33,11 @@ namespace Gevlee.FireflyReceipt.Application.Services.AI
             {
                 _logger.Information("Starting receipt analysis for: {ReceiptPath}", receiptImagePath);
 
+                // Load receipt image/PDF
+                var (imageBytes, mimeType) = await _receiptImageProvider.LoadReceiptAsync(receiptImagePath);
+
                 // Analyze receipt with vision model
-                var receiptAnalysis = await AnalyzeReceiptAsync(receiptImagePath);
+                var receiptAnalysis = await AnalyzeReceiptAsync(imageBytes, mimeType);
 
                 if (receiptAnalysis == null)
                 {
@@ -64,22 +69,11 @@ namespace Gevlee.FireflyReceipt.Application.Services.AI
             }
         }
 
-        private async Task<ReceiptAnalysisResult?> AnalyzeReceiptAsync(string receiptImagePath)
+        private async Task<ReceiptAnalysisResult?> AnalyzeReceiptAsync(byte[] imageBytes, string mimeType)
         {
             try
             {
-                // Read image file
-                var imageBytes = await File.ReadAllBytesAsync(receiptImagePath);
                 var imageData = BinaryData.FromBytes(imageBytes);
-                var imageExtension = Path.GetExtension(receiptImagePath).TrimStart('.').ToLower();
-                var mimeType = imageExtension switch
-                {
-                    "png" => "image/png",
-                    "jpg" or "jpeg" => "image/jpeg",
-                    "gif" => "image/gif",
-                    "webp" => "image/webp",
-                    _ => "image/png"
-                };
 
                 // Create chat messages with image for vision model
                 var messages = new List<ChatMessage>

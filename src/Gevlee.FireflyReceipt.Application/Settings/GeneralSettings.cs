@@ -15,5 +15,7 @@
         public string OpenAiApiKey { get; set; }
 
         public string OpenAiModel { get; set; }
+
+        public bool DeleteOnAssign { get; set; }
     }
 }

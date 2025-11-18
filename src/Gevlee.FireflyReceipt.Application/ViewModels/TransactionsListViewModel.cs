@@ -19,6 +19,7 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
         private IAttachmentService attachmentService;
         private ITransactionService transactionService;
         private IReceiptAutoMatcher receiptAutoMatcher;
+        private ReceiptsBrowserViewModel receiptsBrowserViewModel;
 
         [ObservableProperty]
         private bool isAutoMatching;
@@ -29,11 +30,12 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
         [ObservableProperty]
         private ReceiptTransaction selectedTransaction;
 
-        public TransactionsListViewModel(IAttachmentService attachmentService, ITransactionService transactionService, IReceiptAutoMatcher receiptAutoMatcher)
+        public TransactionsListViewModel(IAttachmentService attachmentService, ITransactionService transactionService, IReceiptAutoMatcher receiptAutoMatcher, ReceiptsBrowserViewModel receiptsBrowserViewModel)
         {
             this.attachmentService = attachmentService;
             this.transactionService = transactionService;
             this.receiptAutoMatcher = receiptAutoMatcher;
+            this.receiptsBrowserViewModel = receiptsBrowserViewModel;
 
             // Initialize to avoid null reference
             Transactions = new ObservableCollection<ReceiptTransaction>();
@@ -66,10 +68,28 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
 
         private async Task AssignReceipt(long arg)
         {
-            await attachmentService.AssignReceipt(CurrentReceipt.Path, arg);
-            CurrentReceipt.TransactionId = arg; //not modifies collection item but immutable copy - to fix
-            ClearAutoMatchSelection();
-            RefreshAssignment();
+            var receiptPath = CurrentReceipt.Path;
+            var fileWasDeleted = await attachmentService.AssignReceipt(receiptPath, arg);
+
+            if (fileWasDeleted)
+            {
+                // File was deleted, remove from UI
+                receiptsBrowserViewModel.RemoveReceipt(receiptPath);
+                // CurrentReceipt will be updated by ReceiptsBrowserViewModel selection change
+            }
+            else
+            {
+                // File was not deleted, update the transaction ID
+                // Find the actual item in the Receipts collection and update it
+                var receiptItem = receiptsBrowserViewModel.Receipts.FirstOrDefault(r => r.Path == receiptPath);
+                if (receiptItem != null)
+                {
+                    receiptItem.TransactionId = arg;
+                }
+                CurrentReceipt.TransactionId = arg;
+                ClearAutoMatchSelection();
+                RefreshAssignment();
+            }
         }
 
         private async Task LoadTransactions()
