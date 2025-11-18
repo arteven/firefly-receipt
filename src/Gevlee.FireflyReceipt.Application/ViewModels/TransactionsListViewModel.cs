@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Gevlee.FireflyReceipt.Application.Models;
 using Gevlee.FireflyReceipt.Application.Services;
+using Gevlee.FireflyReceipt.Application.Services.AI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,17 +12,28 @@ using static Gevlee.FireflyReceipt.Application.Models.TransactionsListViewModel;
 
 namespace Gevlee.FireflyReceipt.Application.ViewModels
 {
-    public class TransactionsListViewModel : ObservableObject
+    public partial class TransactionsListViewModel : ObservableObject
     {
         private ObservableCollection<ReceiptTransaction> transactions;
         private ReceiptsListItem currentReceipt;
         private IAttachmentService attachmentService;
         private ITransactionService transactionService;
+        private IReceiptAutoMatcher receiptAutoMatcher;
 
-        public TransactionsListViewModel(IAttachmentService attachmentService, ITransactionService transactionService)
+        [ObservableProperty]
+        private bool isAutoMatching;
+
+        [ObservableProperty]
+        private long? autoMatchedTransactionId;
+
+        [ObservableProperty]
+        private ReceiptTransaction selectedTransaction;
+
+        public TransactionsListViewModel(IAttachmentService attachmentService, ITransactionService transactionService, IReceiptAutoMatcher receiptAutoMatcher)
         {
             this.attachmentService = attachmentService;
             this.transactionService = transactionService;
+            this.receiptAutoMatcher = receiptAutoMatcher;
 
             // Initialize to avoid null reference
             Transactions = new ObservableCollection<ReceiptTransaction>();
@@ -40,8 +52,10 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
             {
                 if (SetProperty(ref currentReceipt, value))
                 {
+                    ClearAutoMatchSelection();
                     RefreshAssignment();
                     OnAssign.NotifyCanExecuteChanged();
+                    AutoMatchCommand.NotifyCanExecuteChanged();
                 }
             }
         }
@@ -54,6 +68,7 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
         {
             await attachmentService.AssignReceipt(CurrentReceipt.Path, arg);
             CurrentReceipt.TransactionId = arg; //not modifies collection item but immutable copy - to fix
+            ClearAutoMatchSelection();
             RefreshAssignment();
         }
 
@@ -79,5 +94,39 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
                 transaction.HasAssignedReceipt = CurrentReceipt != null && CurrentReceipt.TransactionId.HasValue && CurrentReceipt.TransactionId == transaction.Id;
             }
         }
+
+        private void ClearAutoMatchSelection()
+        {
+            AutoMatchedTransactionId = null;
+            SelectedTransaction = null;
+        }
+
+        [RelayCommand(CanExecute = nameof(CanAutoMatch))]
+        private async Task AutoMatchAsync()
+        {
+            IsAutoMatching = true;
+            try
+            {
+                // Call the auto-matcher
+                var matchedTransaction = await receiptAutoMatcher.MatchReceiptAsync(CurrentReceipt.Path, Transactions);
+
+                if (matchedTransaction != null)
+                {
+                    AutoMatchedTransactionId = matchedTransaction.Id;
+                    SelectedTransaction = (ReceiptTransaction)matchedTransaction;
+                }
+                else
+                {
+                    AutoMatchedTransactionId = null;
+                    SelectedTransaction = null;
+                }
+            }
+            finally
+            {
+                IsAutoMatching = false;
+            }
+        }
+
+        private bool CanAutoMatch() => CurrentReceipt != null && !CurrentReceipt.TransactionId.HasValue && !IsAutoMatching;
     }
 }

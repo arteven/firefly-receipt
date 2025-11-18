@@ -17,6 +17,8 @@ namespace Gevlee.FireflyReceipt.Application.Models
                     Amount = flatTransaction.Amount,
                     Currency = flatTransaction.Currency,
                     Description = flatTransaction.Description,
+                    ForeignAmount = flatTransaction.ForeignAmount,
+                    ForeignCurrency = flatTransaction.ForeignCurrency,
                     Type = flatTransaction.Type
                 };
             }
