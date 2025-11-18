@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using OpenAI;
 using Serilog;
 using System;
+using System.IO;
 using System.Net.Http.Headers;
 
 namespace Gevlee.FireflyReceipt.Application
@@ -26,9 +27,14 @@ namespace Gevlee.FireflyReceipt.Application
               })
               .ConfigureAppConfiguration(builder =>
               {
-                  //builder.SetBasePath(Directory.GetCurrentDirectory())
-                  //  .AddJsonFile("config.json")
-                  //  .AddJsonFile("config.dev.json", true);
+                  var userConfigPath = Path.Combine(
+                      Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                      ".config",
+                      "firefly-receipt",
+                      "config.json"
+                  );
+
+                  builder.AddJsonFile(userConfigPath, optional: true, reloadOnChange: true);
               })
 #if DEBUG
               .UseEnvironment(Environments.Development)
