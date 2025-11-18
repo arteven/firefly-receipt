@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__context7__get-library-docs",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet build:*)",
+      "mcp__context7__resolve-library-id",
+      "WebSearch"
+    ],
+    "deny": [
+    ],
+    "ask": []
+  }
+}
