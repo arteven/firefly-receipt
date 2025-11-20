@@ -85,8 +85,32 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
                 if (receiptItem != null)
                 {
                     receiptItem.TransactionId = arg;
+
+                    // Move to the next unassigned receipt for better workflow
+                    var currentIndex = receiptsBrowserViewModel.Receipts.IndexOf(receiptItem);
+                    var nextUnassignedReceipt = receiptsBrowserViewModel.Receipts
+                        .Skip(currentIndex + 1)
+                        .FirstOrDefault(r => !r.TransactionId.HasValue);
+
+                    if (nextUnassignedReceipt != null)
+                    {
+                        // Select the next unassigned receipt
+                        receiptsBrowserViewModel.SelectedRecipt = nextUnassignedReceipt;
+                    }
+                    else
+                    {
+                        // No more unassigned receipts after this one, check from the beginning
+                        nextUnassignedReceipt = receiptsBrowserViewModel.Receipts
+                            .FirstOrDefault(r => !r.TransactionId.HasValue);
+
+                        if (nextUnassignedReceipt != null)
+                        {
+                            receiptsBrowserViewModel.SelectedRecipt = nextUnassignedReceipt;
+                        }
+                        // If still null, all receipts are assigned, stay on current
+                    }
                 }
-                CurrentReceipt.TransactionId = arg;
+
                 ClearAutoMatchSelection();
                 RefreshAssignment();
             }
