@@ -76,6 +76,9 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
                 // File was deleted, remove from UI
                 receiptsBrowserViewModel.RemoveReceipt(receiptPath);
                 // CurrentReceipt will be updated by ReceiptsBrowserViewModel selection change
+                // Explicitly clear auto-match and refresh to ensure UI updates
+                ClearAutoMatchSelection();
+                RefreshAssignment();
             }
             else
             {
