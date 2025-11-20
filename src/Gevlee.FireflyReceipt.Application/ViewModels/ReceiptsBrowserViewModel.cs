@@ -118,11 +118,14 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
             var receiptToRemove = Receipts.FirstOrDefault(r => r.Path == path);
             if (receiptToRemove != null)
             {
+                var wasSelected = SelectedRecipt?.Path == path;
                 var currentIndex = Receipts.IndexOf(receiptToRemove);
+
+                // Remove from collection
                 Receipts.Remove(receiptToRemove);
 
                 // If the removed receipt was selected, update selection
-                if (SelectedRecipt?.Path == path)
+                if (wasSelected)
                 {
                     // Clear the image
                     ReceiptImg = null;
@@ -130,19 +133,32 @@ namespace Gevlee.FireflyReceipt.Application.ViewModels
                     // Select next receipt if available, otherwise previous
                     if (Receipts.Count > 0)
                     {
+                        // Determine the new index to select
+                        int newIndex;
                         if (currentIndex < Receipts.Count)
                         {
-                            SelectedRecipt = Receipts[currentIndex];
+                            newIndex = currentIndex; // Next item is now at the same index
                         }
                         else
                         {
-                            SelectedRecipt = Receipts[Receipts.Count - 1];
+                            newIndex = Receipts.Count - 1; // Select last item
                         }
+
+                        // Update both index and item to ensure UI syncs properly
+                        SelectedReciptIndex = newIndex;
+                        SelectedRecipt = Receipts[newIndex];
                     }
                     else
                     {
+                        // No more receipts
+                        SelectedReciptIndex = -1;
                         SelectedRecipt = null;
                     }
+                }
+                else if (SelectedReciptIndex >= Receipts.Count)
+                {
+                    // If the removed receipt was after the selected one, adjust index if needed
+                    SelectedReciptIndex = Receipts.Count - 1;
                 }
 
                 OnNext.NotifyCanExecuteChanged();
