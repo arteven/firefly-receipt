@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firefly III - Transaction Draft Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .attachment-preview {
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+        }
+        .form-section {
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+    <div class="flex h-screen">
+        <!-- Left Panel - Attachment Preview -->
+        <div class="w-1/2 bg-gray-800 p-6 border-r border-gray-700">
+            <div class="attachment-preview">
+                <h2 class="text-lg font-semibold mb-4 text-gray-300">Załączniki</h2>
+                <div class="bg-gray-700 rounded-lg p-8 flex items-center justify-center min-h-[400px]">
+                    <div class="text-center text-gray-500">
+                        <svg class="w-24 h-24 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        <p class="text-sm">No files selected</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button class="w-full bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded transition">
+                        Browse...
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Form -->
+        <div class="w-1/2 bg-gray-900 p-6">
+            <div class="form-section">
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-2xl font-bold text-gray-100">Transakcje</h1>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition">
+                        + Utwórz nową wpłatę
+                    </button>
+                </div>
+
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h2 class="text-lg font-semibold mb-6 text-gray-200">Informacje o transakcji</h2>
+
+                    <!-- Transaction Type -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Typ</label>
+                        <select class="w-full bg-gray-700 border border-gray-600 text-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="withdrawal">Biedronka</option>
+                            <option value="deposit">Żabka</option>
+                            <option value="transfer">Przelew dla Agaty</option>
+                            <option>Rachunek NJ Anit</option>
+                            <option>Zwrot Bacznia Allegro</option>
+                            <option>Karma Fraja</option>
+                        </select>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Opis</label>
+                        <input type="text" class="w-full bg-gray-700 border border-gray-600 text-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Opis">
+                    </div>
+
+                    <!-- Date -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Data</label>
+                        <input type="date" class="w-full bg-gray-700 border border-gray-600 text-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" value="2025-10-10">
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Kwota</label>
+                        <select class="w-full bg-gray-700 border border-gray-600 text-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>Kwota</option>
+                        </select>
+                    </div>
+
+                    <!-- Recorded Amount -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Kwota zapisywana</label>
+                        <select class="w-full bg-gray-700 border border-gray-600 text-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>Kwota zapisywana</option>
+                        </select>
+                    </div>
+
+                    <!-- Budget -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Budżet</label>
+                        <input type="text" class="w-full bg-gray-700 border border-gray-600 text-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Jedzina" value="Jedzina">
+                    </div>
+
+                    <!-- Category -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Kategoria</label>
+                        <input type="text" class="w-full bg-gray-700 border border-gray-600 text-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Kategoria">
+                    </div>
+
+                    <!-- Piggy Bank -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Skarbonka</label>
+                        <input type="text" class="w-full bg-gray-700 border border-gray-600 text-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="(brak skarbonki)" value="(brak skarbonki)">
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Tagi</label>
+                        <input type="text" class="w-full bg-gray-700 border border-gray-600 text-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Tagi">
+                    </div>
+
+                    <!-- Subscription -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Subskrypcja</label>
+                        <input type="text" class="w-full bg-gray-700 border border-gray-600 text-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="(Jedno)">
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="mb-6">
+                        <p class="text-sm text-blue-400">
+                            Możesz uregulować niektóre opcje transakcji w opcji <span class="underline cursor-pointer">ustaweniach</span>.
+                        </p>
+                    </div>
+
+                    <!-- Save Section -->
+                    <div class="border-t border-gray-700 pt-6">
+                        <h3 class="text-md font-semibold mb-4 text-gray-200">Zapisz</h3>
+
+                        <div class="space-y-3 mb-6">
+                            <label class="flex items-center text-sm text-gray-300">
+                                <input type="checkbox" class="mr-2 w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
+                                Po zapisaniu wróć tutaj, aby utworzyć kolejną
+                            </label>
+                            <label class="flex items-center text-sm text-gray-300">
+                                <input type="checkbox" class="mr-2 w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
+                                Wyrównać formularz po zapisaniu
+                            </label>
+                        </div>
+
+                        <div class="mb-6">
+                            <h4 class="text-sm font-medium mb-3 text-gray-200">Opcje zapisu</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center text-sm text-gray-300">
+                                    <input type="checkbox" checked class="mr-2 w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
+                                    Zastosuj reguły
+                                </label>
+                                <label class="flex items-center text-sm text-gray-300">
+                                    <input type="checkbox" checked class="mr-2 w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
+                                    Uruchom webhoki
+                                </label>
+                            </div>
+                        </div>
+
+                        <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-3 rounded transition">
+                            Przeleć
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple transaction type switching logic
+        const typeSelect = document.querySelector('select');
+        typeSelect.addEventListener('change', (e) => {
+            console.log('Transaction type changed to:', e.target.value);
+            // Here you can add logic to show/hide fields based on transaction type
+        });
+    </script>
+</body>
+</html>
